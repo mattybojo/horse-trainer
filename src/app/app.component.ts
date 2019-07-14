@@ -3,12 +3,28 @@ import { Component } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { MenuItem } from './shared/models/menu-item.model';
+import { faHorse, faDumbbell } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-root',
-  templateUrl: 'app.component.html'
+  templateUrl: 'app.component.html',
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+
+  menuItems: MenuItem[] = [
+    {
+      'title': 'Horses',
+      'link': '/horse-list',
+      'icon': faHorse
+    }, {
+      'title': 'Exercises',
+      'link': '/exercise-list',
+      'icon': faDumbbell
+    }
+  ];
+
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
