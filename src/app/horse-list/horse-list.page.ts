@@ -1,25 +1,40 @@
+import { LoadingService } from './../shared/services/loading.service';
 import { Component, OnInit } from '@angular/core';
 import { RouteParam } from '../shared/models/route-param.model';
 import { NavController } from '@ionic/angular';
 import { NavDataService } from '../shared/services/nav-data.service';
 import { HorseService } from '../shared/services/horse.service';
 import { Horse } from '../shared/models/horse.model';
+import { Observable } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-horses',
   templateUrl: './horse-list.page.html',
   styleUrls: ['./horse-list.page.scss'],
 })
-export class HorseListPage implements OnInit {
+export class HorseListPage {
 
-  horses: Horse[];
+  horses$: Observable<Horse[]>;
+  loading: boolean;
 
-  constructor(public navCtrl: NavController, private navDataService: NavDataService, private horseService: HorseService) { }
-
-  ngOnInit() {}
+  constructor(public navCtrl: NavController, private navDataService: NavDataService,
+    private horseService: HorseService, private loadingService: LoadingService) { }
 
   ionViewWillEnter() {
-    this.horses = this.horseService.horses;
+    // Only show the loading on the initial load of this page
+    if (!this.horses$) {
+      this.loadingService.present('Loading data...');
+    }
+    this.loadHorses();
+  }
+
+  loadHorses() {
+    this.horses$ = this.horseService.
+    loadAllHorses()
+    .pipe(
+      finalize(() => this.loadingService.dismiss()),
+    );
   }
 
   addHorse() {
@@ -38,8 +53,15 @@ export class HorseListPage implements OnInit {
   }
 
   deleteHorse(horse: Horse) {
-    this.horseService.deleteHorse(horse);
-    this.horses = this.horseService.horses;
+    this.loadingService.present(`Deleting "${horse.name}"...`);
+    this.horseService.deleteHorse(horse).subscribe(() => {
+      this.loadHorses();
+      this.loadingService.dismiss();
+    }, (err) => {
+      // TODO: More robust error handling
+      console.log('Unable to delete...');
+      this.loadingService.dismiss();
+    });
   }
 
 }

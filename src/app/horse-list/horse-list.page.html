@@ -12,16 +12,18 @@
   
 <ion-content padding>
   <ion-list>
-    <ion-item-sliding *ngFor="let horse of horses">
-      <ion-item button detail="false" (click)="viewHorse(horse)">
-        {{ horse.name }}
-      </ion-item>
-      <ion-item-options side="end">
-          <ion-item-option color="danger" (click)="deleteHorse(horse)">
-              Delete
-          </ion-item-option>
-        </ion-item-options>
-    </ion-item-sliding>
+    <ng-container *ngIf="(horses$ | async) as horses">
+      <ion-item-sliding *ngFor="let horse of horses">
+        <ion-item button detail="false" (click)="viewHorse(horse)">
+          {{ horse.name }}
+        </ion-item>
+        <ion-item-options side="end">
+            <ion-item-option color="danger" (click)="deleteHorse(horse)">
+                Delete
+            </ion-item-option>
+          </ion-item-options>
+      </ion-item-sliding>
+    </ng-container>
   </ion-list>
 </ion-content>
   

@@ -1,48 +1,36 @@
 import { Injectable } from '@angular/core';
 import { Exercise } from '../models/exercise.model';
+import { AngularFirestore, DocumentReference } from '@angular/fire/firestore';
+import { Observable, from } from 'rxjs';
+import { map, first } from 'rxjs/operators';
+import { convertSnaps } from './db-utils';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ExerciseService {
 
-  // TODO: This is purely for demo purposes to generate a unique ID.  Remove later.
-  private _id = 4;
-  get id() {
-    return this._id;
+  constructor(private db: AngularFirestore) {}
+
+  loadAllExercises(): Observable<Exercise[]> {
+    return this.db.
+      collection('exercises', ref => ref.orderBy('name'))
+      .snapshotChanges()
+      .pipe(
+        map(snaps => convertSnaps<Exercise>(snaps)),
+        first()
+      );
   }
 
-  private _exercises: Exercise[] = [
-    {
-      'id': 1,
-      'name': 'Pessoa - Walk'
-    }, {
-      'id': 2,
-      'name': 'Pessoa - Trot'
-    }, {
-      'id': 3,
-      'name': 'Pessoa - Lope'
-    }
-  ];
-  get exercises() {
-    return this._exercises;
+  addExercise(exercise: Exercise): Observable<DocumentReference> {
+    return from(this.db.collection('exercises').add({ ...exercise }));
   }
 
-  addExercise(exercise: Exercise) {
-    exercise.id = this._id;
-    this._exercises.push(exercise);
-    this._id++;
+  updateExercise(exercise: Exercise): Observable<void> {
+    return from(this.db.doc(`exercises/${exercise.id}`).update(exercise));
   }
 
-  updateExercise(exercise: Exercise) {
-    const index = this._exercises.findIndex((x: Exercise) => x.id === exercise.id);
-    this._exercises[index] = exercise;
+  deleteExercise(exercise: Exercise): Observable<void> {
+    return from(this.db.doc(`exercises/${exercise.id}`).delete());
   }
-
-  deleteExercise(exercise: Exercise) {
-    const index = this._exercises.findIndex((x: Exercise) => x.id === exercise.id);
-    this._exercises.splice(index, 1);
-  }
-
-  constructor() { }
 }

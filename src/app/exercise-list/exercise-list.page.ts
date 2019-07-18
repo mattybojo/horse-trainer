@@ -1,25 +1,41 @@
+import { LoadingService } from './../shared/services/loading.service';
 import { Component, OnInit } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { Exercise } from '../shared/models/exercise.model';
 import { NavDataService } from '../shared/services/nav-data.service';
 import { RouteParam } from '../shared/models/route-param.model';
 import { ExerciseService } from '../shared/services/exercise.service';
+import { Observable } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-exercises',
   templateUrl: './exercise-list.page.html',
   styleUrls: ['./exercise-list.page.scss'],
 })
-export class ExerciseListPage implements OnInit {
+export class ExerciseListPage {
 
-  exercises: Exercise[];
+  exercises$: Observable<Exercise[]>;
+  loading: boolean;
 
-  constructor(public navCtrl: NavController, private navDataService: NavDataService, private exerciseService: ExerciseService) { }
-
-  ngOnInit() {}
+  constructor(public navCtrl: NavController, private navDataService: NavDataService,
+    private exerciseService: ExerciseService, private loadingService: LoadingService) { }
 
   ionViewWillEnter() {
-    this.exercises = this.exerciseService.exercises;
+    // Only show the loading on the initial load of this page
+    if (!this.exercises$) {
+      this.loadingService.present('Loading data...');
+    }
+
+    this.loadExercises();
+  }
+
+  loadExercises() {
+    this.exercises$ = this.exerciseService.
+    loadAllExercises()
+    .pipe(
+      finalize(() => this.loadingService.dismiss()),
+    );
   }
 
   addExercise() {
@@ -38,8 +54,15 @@ export class ExerciseListPage implements OnInit {
   }
 
   deleteExercise(exercise: Exercise) {
-    this.exerciseService.deleteExercise(exercise);
-    this.exercises = this.exerciseService.exercises;
+    this.loadingService.present(`Deleting "${exercise.name}"...`);
+    this.exerciseService.deleteExercise(exercise).subscribe(() => {
+      this.loadExercises();
+      this.loadingService.dismiss();
+    }, (err) => {
+      // TODO: More robust error handling
+      console.log('Unable to delete...');
+      this.loadingService.dismiss();
+    });
   }
 
 }

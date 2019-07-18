@@ -1,45 +1,36 @@
 import { Horse } from './../models/horse.model';
 import { Injectable } from '@angular/core';
+import { AngularFirestore, DocumentReference } from '@angular/fire/firestore';
+import { Observable, from } from 'rxjs';
+import { map, first } from 'rxjs/operators';
+import { convertSnaps } from './db-utils';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HorseService {
 
-  // TODO: This is purely for demo purposes to generate a unique ID.  Remove later.
-  private _id = 4;
-  get id() {
-    return this._id;
+  constructor(private db: AngularFirestore) {}
+
+  loadAllHorses(): Observable<Horse[]> {
+    return this.db.
+      collection('horses', ref => ref.orderBy('name'))
+      .snapshotChanges()
+      .pipe(
+        map(snaps => convertSnaps<Horse>(snaps)),
+        first()
+      );
   }
 
-  private _horses: Horse[] = [
-    {
-      'id': 1,
-      'name': 'Dixie'
-    }, {
-      'id': 2,
-      'name': 'Peaches'
-    }
-  ];
-  get horses() {
-    return this._horses;
-  }
-
-  addHorse(horse: Horse) {
-    horse.id = this._id;
-    this._horses.push(horse);
-    this._id++;
+  addHorse(horse: Horse): Observable<DocumentReference> {
+    return from(this.db.collection('horses').add({ ...horse }));
   }
 
   updateHorse(horse: Horse) {
-    const index = this._horses.findIndex((x: Horse) => x.id === horse.id);
-    this._horses[index] = horse;
+    return from(this.db.doc(`horses/${horse.id}`).update(horse));
   }
 
   deleteHorse(horse: Horse) {
-    const index = this._horses.findIndex((x: Horse) => x.id === horse.id);
-    this._horses.splice(index, 1);
+    return from(this.db.doc(`horses/${horse.id}`).delete());
   }
-
-  constructor() { }
 }
