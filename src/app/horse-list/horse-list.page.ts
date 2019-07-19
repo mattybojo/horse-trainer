@@ -1,5 +1,5 @@
 import { LoadingService } from './../shared/services/loading.service';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouteParam } from '../shared/models/route-param.model';
 import { NavController } from '@ionic/angular';
 import { NavDataService } from '../shared/services/nav-data.service';

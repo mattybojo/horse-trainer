@@ -1,6 +1,6 @@
 import { LoadingService } from './../shared/services/loading.service';
 import { ExerciseService } from './../shared/services/exercise.service';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Exercise } from '../shared/models/exercise.model';
 import { NavDataService } from '../shared/services/nav-data.service';
 import { NavController } from '@ionic/angular';

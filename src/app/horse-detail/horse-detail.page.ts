@@ -1,7 +1,7 @@
 import { LoadingService } from './../shared/services/loading.service';
 import { HorseService } from './../shared/services/horse.service';
 import { Horse } from './../shared/models/horse.model';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { cloneDeep } from 'lodash';
 import { NavController } from '@ionic/angular';
 import { NavDataService } from '../shared/services/nav-data.service';
