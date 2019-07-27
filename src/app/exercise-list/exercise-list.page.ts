@@ -6,7 +6,7 @@ import { NavDataService } from '../shared/services/nav-data.service';
 import { RouteParam } from '../shared/models/route-param.model';
 import { ExerciseService } from '../shared/services/exercise.service';
 import { Observable } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { finalize, first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-exercises',
@@ -23,7 +23,7 @@ export class ExerciseListPage {
 
   ionViewWillEnter() {
     // Only show the loading on the initial load of this page
-    if (!this.exercises$) {
+    if (null == this.exercises$) {
       this.loadingService.present('Loading data...');
     }
 
@@ -34,7 +34,8 @@ export class ExerciseListPage {
     this.exercises$ = this.exerciseService.
     loadAllExercises()
     .pipe(
-      finalize(() => this.loadingService.dismiss()),
+      first(),
+      finalize(() => this.loadingService.dismiss())
     );
   }
 

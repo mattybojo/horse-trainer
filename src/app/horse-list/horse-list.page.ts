@@ -6,7 +6,7 @@ import { NavDataService } from '../shared/services/nav-data.service';
 import { HorseService } from '../shared/services/horse.service';
 import { Horse } from '../shared/models/horse.model';
 import { Observable } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { finalize, first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-horses',
@@ -23,18 +23,19 @@ export class HorseListPage {
 
   ionViewWillEnter() {
     // Only show the loading on the initial load of this page
-    if (!this.horses$) {
+    if (null == this.horses$) {
       this.loadingService.present('Loading data...');
     }
     this.loadHorses();
   }
 
   loadHorses() {
-    this.horses$ = this.horseService.
-    loadAllHorses()
-    .pipe(
-      finalize(() => this.loadingService.dismiss()),
-    );
+    this.horses$ = this.horseService
+      .loadAllHorses()
+      .pipe(
+        first(),
+        finalize(() => this.loadingService.dismiss())
+      );
   }
 
   addHorse() {

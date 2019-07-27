@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Exercise } from '../models/exercise.model';
 import { AngularFirestore, DocumentReference } from '@angular/fire/firestore';
 import { Observable, from } from 'rxjs';
-import { map, first } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { convertSnaps } from './db-utils';
 
 @Injectable({
@@ -17,8 +17,7 @@ export class ExerciseService {
       collection('exercises', ref => ref.orderBy('name'))
       .snapshotChanges()
       .pipe(
-        map(snaps => convertSnaps<Exercise>(snaps)),
-        first()
+        map(snaps => convertSnaps<Exercise>(snaps))
       );
   }
 

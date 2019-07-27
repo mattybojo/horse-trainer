@@ -2,7 +2,7 @@ import { Horse } from './../models/horse.model';
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/firestore';
 import { Observable, from } from 'rxjs';
-import { map, first } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { convertSnaps } from './db-utils';
 
 @Injectable({
@@ -17,8 +17,7 @@ export class HorseService {
       collection('horses', ref => ref.orderBy('name'))
       .snapshotChanges()
       .pipe(
-        map(snaps => convertSnaps<Horse>(snaps)),
-        first()
+        map(snaps => convertSnaps<Horse>(snaps))
       );
   }
 
