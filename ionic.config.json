@@ -1,5 +1,7 @@
 {
   "name": "horse-trainer",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }
