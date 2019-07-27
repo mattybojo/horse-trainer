@@ -1,4 +1,4 @@
 export class Horse {
-    id: number;
+    id: string;
     name: string;
 }
