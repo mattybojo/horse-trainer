@@ -22,17 +22,14 @@ export class ExerciseListPage {
     private exerciseService: ExerciseService, private loadingService: LoadingService) { }
 
   ionViewWillEnter() {
-    // Only show the loading on the initial load of this page
-    if (null == this.exercises$) {
-      this.loadingService.present('Loading data...');
-    }
+    this.loadingService.present('Loading data...');
 
     this.loadExercises();
   }
 
   loadExercises() {
-    this.exercises$ = this.exerciseService.
-    loadAllExercises()
+    this.exercises$ = this.exerciseService
+    .loadAllExercises()
     .pipe(
       first(),
       finalize(() => this.loadingService.dismiss())

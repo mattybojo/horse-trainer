@@ -22,10 +22,7 @@ export class HorseListPage {
     private horseService: HorseService, private loadingService: LoadingService) { }
 
   ionViewWillEnter() {
-    // Only show the loading on the initial load of this page
-    if (null == this.horses$) {
-      this.loadingService.present('Loading data...');
-    }
+    this.loadingService.present('Loading data...');
     this.loadHorses();
   }
 

@@ -25,11 +25,11 @@ export class HorseService {
     return from(this.db.collection('horses').add({ ...horse }));
   }
 
-  updateHorse(horse: Horse) {
+  updateHorse(horse: Horse): Observable<void> {
     return from(this.db.doc(`horses/${horse.id}`).update(horse));
   }
 
-  deleteHorse(horse: Horse) {
+  deleteHorse(horse: Horse): Observable<void> {
     return from(this.db.doc(`horses/${horse.id}`).delete());
   }
 }
