@@ -1,0 +1,31 @@
+.form-buttons {
+    ion-button:not(:first-child) {
+        margin-left: 1em;
+    }
+    text-align: center;
+    margin-top: 1em;
+}
+
+ion-datetime {
+    padding-left: 0px;
+}
+
+.format-grid {
+    height: 44px;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.format-grid > ion-row {
+    height: 44px;
+}
+
+ion-item {
+    --padding-start: 0;
+}
+
+ion-textarea ::ng-deep textarea {
+    display: inline-block !important;
+    vertical-align: middle;
+    padding-top: 10px !important;
+}

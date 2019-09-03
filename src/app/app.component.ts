@@ -4,7 +4,7 @@ import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { MenuItem } from './shared/models/menu-item.model';
-import { faHorse, faDumbbell } from '@fortawesome/free-solid-svg-icons';
+import { faHorse, faDumbbell, faClipboardList } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-root',
@@ -15,13 +15,17 @@ export class AppComponent {
 
   menuItems: MenuItem[] = [
     {
-      'title': 'Horses',
-      'link': '/horse-list',
-      'icon': faHorse
+      title: 'Horses',
+      link: '/horse-list',
+      icon: faHorse
     }, {
-      'title': 'Exercises',
-      'link': '/exercise-list',
-      'icon': faDumbbell
+      title: 'Exercises',
+      link: '/exercise-list',
+      icon: faDumbbell
+    }, {
+      title: 'Exercise Log',
+      link: '/exercise-log-list',
+      icon: faClipboardList
     }
   ];
 
