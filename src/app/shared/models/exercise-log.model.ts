@@ -1,4 +1,4 @@
-import { firestore } from 'firebase';
+import { firestore } from 'firebase/app';
 import { DocumentReference } from '@angular/fire/firestore';
 
 export class ExerciseLog {

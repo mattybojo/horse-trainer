@@ -6,7 +6,7 @@ import { NavController } from '@ionic/angular';
 import { NavDataService } from '../shared/services/nav-data.service';
 import { LoadingService } from '../shared/services/loading.service';
 import { Observable } from 'rxjs';
-import { firestore } from 'firebase';
+import { firestore } from 'firebase/app';
 import { RouteParam } from '../shared/models/route-param.model';
 
 @Component({
@@ -47,8 +47,8 @@ export class ExerciseLogDetailPage {
     }
   }
 
-  // TODO: Test to make sure the proper values are getting sent to the backend
   onSubmit() {
+    const params: RouteParam[] = [];
     let dbObservable: Observable<any>;
     this.exerciseLog.createdAt = firestore.Timestamp.fromDate(new Date(this.formattedDate));
     this.loadingService.present('Saving the exercise...');
@@ -60,6 +60,8 @@ export class ExerciseLogDetailPage {
 
     dbObservable.subscribe(() => {
       this.loadingService.dismiss();
+      params.push({key: 'exerciseLogHorse', value: this.exerciseLog.horse});
+      this.navDataService.routeParams = params;
       this.navCtrl.navigateBack('/exercise-log-list');
     }, (err) => {
       // TODO: More robust error handling
