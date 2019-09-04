@@ -33,9 +33,7 @@ export class ExerciseLogListPage {
 
   ionViewWillEnter() {
     this.loadingService.present('Loading data...');
-    if (this.navDataService.hasRouteParam('exerciseLogHorse')) {
-      this.selectedHorse = this.navDataService.getRouteParamValue('exerciseLogHorse');
-    }
+    this.selectedHorse = this.navDataService.getRouteParamValue('exerciseLogHorse');
     this.loadHorses();
   }
 

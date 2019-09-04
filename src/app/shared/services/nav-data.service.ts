@@ -6,7 +6,7 @@ import { RouteParam } from '../models/route-param.model';
 })
 export class NavDataService {
 
-  private _routeParams: RouteParam[];
+  private _routeParams: RouteParam[] = [];
   set routeParams(routeParams: RouteParam[]) {
     this._routeParams = routeParams;
   }
@@ -17,7 +17,16 @@ export class NavDataService {
   }
 
   getRouteParamValue(rpKey: string): any {
-    return this._routeParams.find((x: RouteParam) => x.key === rpKey).value;
+    const routeParam: RouteParam = this.getRouteParam(rpKey);
+    let rpVal: any = null;
+    if (routeParam) {
+      rpVal = routeParam.value;
+    }
+    return rpVal;
+  }
+
+  private getRouteParam(rpKey: string): RouteParam {
+    return this._routeParams.find((x: RouteParam) => x.key === rpKey);
   }
 
   constructor() {}
