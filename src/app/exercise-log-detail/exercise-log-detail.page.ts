@@ -28,6 +28,7 @@ export class ExerciseLogDetailPage {
   disabled = true;
   horseList: Horse[];
   exerciseList: Exercise[];
+  horse: Horse;
 
   constructor(private navCtrl: NavController, private navDataService: NavDataService,
     private exerciseLogService: ExerciseLogService, private loadingService: LoadingService,
@@ -38,6 +39,7 @@ export class ExerciseLogDetailPage {
 
     switch (this.pageType) {
       case 'view':
+        this.horse = this.navDataService.getRouteParamValue('horse');
         this._exerciseLog = this.navDataService.getRouteParamValue('exerciseLog');
         this.exerciseLog = cloneDeep(this._exerciseLog);
         this.formattedDate = this.exerciseLog.createdAt.toDate().toISOString();
@@ -50,7 +52,8 @@ export class ExerciseLogDetailPage {
         this.disabled = false;
         break;
       case 'add':
-        this.exerciseLog.horse.name = this.navDataService.getRouteParamValue('horse');
+        this.horse = this.navDataService.getRouteParamValue('horse');
+        this.exerciseLog.horse.name = this.horse.name;
         this.loadHorseOptions();
         break;
     }
@@ -73,7 +76,7 @@ export class ExerciseLogDetailPage {
     const params: RouteParam[] = [];
     let dbObservable: Observable<any>;
     this.exerciseLog.createdAt = firestore.Timestamp.fromDate(new Date(this.formattedDate));
-    
+
     // Get the ID for each object
     const horseId = this.getObjectId(this.horseList, this.exerciseLog.horse.name);
     const exerciseId = this.getObjectId(this.exerciseList, this.exerciseLog.exercise.name);
@@ -87,7 +90,7 @@ export class ExerciseLogDetailPage {
 
     dbObservable.subscribe(() => {
       this.loadingService.dismiss();
-      params.push({key: 'exerciseLogHorse', value: this.exerciseLog.horse});
+      params.push({key: 'exerciseLogHorse', value: this.horse});
       this.navDataService.routeParams = params;
       this.navCtrl.navigateBack('/exercise-log-list');
     }, (err) => {
@@ -105,7 +108,7 @@ export class ExerciseLogDetailPage {
 
   onBackClick() {
     const params: RouteParam[] = [];
-    params.push({key: 'exerciseLogHorse', value: this.exerciseLog.horse});
+    params.push({key: 'exerciseLogHorse', value: this.horse});
     this.navDataService.routeParams = params;
     this.navCtrl.navigateBack('/exercise-log-list');
   }

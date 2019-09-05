@@ -59,7 +59,7 @@ export class ExerciseLogListPage {
   addExerciseLog() {
     const params: RouteParam[] = [];
     params.push({key: 'pageType', value: 'add'});
-    params.push({key: 'horse', value: this.selectedHorse.name});
+    params.push({key: 'horse', value: this.selectedHorse});
     this.navDataService.routeParams = params;
     this.navCtrl.navigateForward('/exercise-log-detail');
   }
@@ -68,6 +68,7 @@ export class ExerciseLogListPage {
     const params: RouteParam[] = [];
     params.push({key: 'pageType', value: 'view'});
     params.push({key: 'exerciseLog', value: exerciseLog});
+    params.push({key: 'horse', value: this.selectedHorse});
     this.navDataService.routeParams = params;
     this.navCtrl.navigateForward('/exercise-log-detail');
   }
