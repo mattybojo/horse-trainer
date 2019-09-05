@@ -17,8 +17,19 @@
         <ion-item>
           <ion-grid class="format-grid">
             <ion-row>
-              <ion-col align-self-center size="4"><ion-label>Horse</ion-label></ion-col>
-              <ion-col align-self-center size="8"><ion-input type="text" id="horse-name" class="form-control" name="horseName" [ngModel]="exerciseLog.horse?.name" (ngModelChange)="exerciseLog.horse.name=$event" #name="ngModel" required [disabled]="disabled"></ion-input></ion-col>        
+              <ion-col align-self-center size="4">
+                <ion-label>Horse</ion-label>
+              </ion-col>
+              <ion-col align-self-center size="8">
+                <ion-select id="horse-name" class="form-control" name="horseName" [ngModel]="exerciseLog.horse?.name" (ngModelChange)="exerciseLog.horse.name=$event" [value]="exerciseLog.horse?.name" #name="ngModel" required [disabled]="disabled">
+                  <ng-container *ngIf="horseList">
+                      <ion-select-option *ngFor="let horse of horseList" [value]="horse.name">{{ horse.name }}</ion-select-option>
+                  </ng-container>                
+                  <ng-container *ngIf="!horseList && exerciseLog.horse">
+                      <ion-select-option [value]="exerciseLog.horse?.name">{{ exerciseLog.horse.name }}</ion-select-option>
+                  </ng-container>                    
+                </ion-select>
+              </ion-col>        
             </ion-row>
             </ion-grid>
         </ion-item>
@@ -26,8 +37,19 @@
         <ion-item>
           <ion-grid class="format-grid">
             <ion-row>
-              <ion-col align-self-center size="4"><ion-label>Exercise</ion-label></ion-col>
-              <ion-col align-self-center size="8"><ion-input type="text" id="exercise-name" class="form-control" name="exerciseName" [ngModel]="exerciseLog.exercise?.name" (ngModelChange)="exerciseLog.exercise.name=$event" #name="ngModel" required [disabled]="disabled"></ion-input></ion-col>
+              <ion-col align-self-center size="4">
+                <ion-label>Exercise</ion-label>
+              </ion-col>
+              <ion-col align-self-center size="8">
+                <ion-select id="exercise-name" class="form-control" name="exerciseName" [ngModel]="exerciseLog.exercise?.name" (ngModelChange)="exerciseLog.exercise.name=$event" [value]="exerciseLog.exercise?.name" #name="ngModel" required [disabled]="disabled">
+                    <ng-container *ngIf="exerciseList">
+                        <ion-select-option *ngFor="let exercise of exerciseList" [value]="exercise.name">{{ exercise.name }}</ion-select-option>
+                    </ng-container>
+                    <ng-container *ngIf="!exerciseList && exerciseLog.exercise">
+                        <ion-select-option [value]="exerciseLog.exercise?.name">{{ exerciseLog.exercise.name }}</ion-select-option>
+                    </ng-container>                    
+                  </ion-select>
+              </ion-col>
             </ion-row>
           </ion-grid>
         </ion-item>
@@ -35,8 +57,12 @@
         <ion-item>
           <ion-grid class="format-grid">
             <ion-row>
-              <ion-col align-self-center size="4"><ion-label>Time (mins)</ion-label></ion-col>
-              <ion-col align-self-center size="8"><ion-input type="text" id="time" class="form-control" name="time" [(ngModel)]="exerciseLog.time" #name="ngModel" required [disabled]="disabled"></ion-input></ion-col>
+              <ion-col align-self-center size="4">
+                <ion-label>Time (mins)</ion-label>
+              </ion-col>
+              <ion-col align-self-center size="8">
+                <ion-input type="text" id="time" class="form-control" name="time" [(ngModel)]="exerciseLog.time" #name="ngModel" required [disabled]="disabled"></ion-input>
+              </ion-col>
             </ion-row>
           </ion-grid>
         </ion-item>
@@ -44,8 +70,12 @@
         <ion-item>
           <ion-grid class="format-grid">
             <ion-row>
-              <ion-col align-self-center size="4"><ion-label>Date</ion-label></ion-col>
-              <ion-col align-self-center size="8"><ion-datetime id="date" class="form-control" name="date" [(ngModel)]="formattedDate" #name="ngModel" displayFormat="MMM DD, YYYY HH:mm" required [disabled]="disabled"></ion-datetime></ion-col>
+              <ion-col align-self-center size="4">
+                <ion-label>Date</ion-label>
+              </ion-col>
+              <ion-col align-self-center size="8">
+                <ion-datetime id="date" class="form-control" name="date" [(ngModel)]="formattedDate" #name="ngModel" displayFormat="MMM DD, YYYY HH:mm" required [disabled]="disabled"></ion-datetime>
+              </ion-col>
             </ion-row>
           </ion-grid>
         </ion-item>
@@ -53,8 +83,12 @@
         <ion-item>
           <ion-grid>
             <ion-row>
-              <ion-col align-self-center size="4"><ion-label>Notes</ion-label></ion-col>
-              <ion-col align-self-center size="8"><ion-textarea id="notes" class="form-control" name="notes" [(ngModel)]="exerciseLog.notes" #name="ngModel" required [disabled]="disabled" autosize rows="1"></ion-textarea></ion-col>
+              <ion-col align-self-center size="4">
+                <ion-label>Notes</ion-label>
+              </ion-col>
+              <ion-col align-self-center size="8">
+                <ion-textarea id="notes" class="form-control" name="notes" [(ngModel)]="exerciseLog.notes" #name="ngModel" required [disabled]="disabled" autosize rows="1"></ion-textarea>
+              </ion-col>
             </ion-row>
           </ion-grid>
         </ion-item>

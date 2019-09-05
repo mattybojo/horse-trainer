@@ -22,15 +22,23 @@ export class ExerciseLogService {
       );
   }
 
-  addExerciseLog(exerciseLog: ExerciseLog): Observable<DocumentReference> {
+  addExerciseLog(exerciseLog: ExerciseLog, horseId: string, exerciseId: string): Observable<DocumentReference> {
+    exerciseLog.horse = this.getDocRef(exerciseLog.horse.name, horseId, 'horses');
+    exerciseLog.exercise = this.getDocRef(exerciseLog.exercise.name, exerciseId, 'exercises');
     return from(this.db.collection('exerciseLogs').add({ ...exerciseLog }));
   }
 
-  updateExerciseLog(exerciseLog: ExerciseLog): Observable<void> {
+  updateExerciseLog(exerciseLog: ExerciseLog, horseId: string, exerciseId: string): Observable<void> {
+    exerciseLog.horse = this.getDocRef(exerciseLog.horse.name, horseId, 'horses');
+    exerciseLog.exercise = this.getDocRef(exerciseLog.exercise.name, exerciseId, 'exercises');
     return from(this.db.doc(`exerciseLogs/${exerciseLog.id}`).update(exerciseLog));
   }
 
   deleteExerciseLog(exerciseLog: ExerciseLog): Observable<void> {
     return from(this.db.doc(`exerciseLogs/${exerciseLog.id}`).delete());
+  }
+
+  private getDocRef(objName: string, objId: string, collectionName: string): {name: string, ref: DocumentReference} {
+    return {name: objName, ref: this.db.collection(collectionName).doc(objId).ref};
   }
 }

@@ -1,3 +1,6 @@
+import { Exercise } from './../shared/models/exercise.model';
+import { Horse } from './../shared/models/horse.model';
+import { HorseService } from './../shared/services/horse.service';
 import { ExerciseLog } from './../shared/models/exercise-log.model';
 import { Component } from '@angular/core';
 import { cloneDeep } from 'lodash';
@@ -5,9 +8,11 @@ import { ExerciseLogService } from '../shared/services/exercise-log.service';
 import { NavController } from '@ionic/angular';
 import { NavDataService } from '../shared/services/nav-data.service';
 import { LoadingService } from '../shared/services/loading.service';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { firestore } from 'firebase/app';
 import { RouteParam } from '../shared/models/route-param.model';
+import { ExerciseService } from '../shared/services/exercise.service';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-exercise-log-detail',
@@ -21,9 +26,12 @@ export class ExerciseLogDetailPage {
   formattedDate: string;
   pageType: string;
   disabled = true;
+  horseList: Horse[];
+  exerciseList: Exercise[];
 
   constructor(private navCtrl: NavController, private navDataService: NavDataService,
-    private exerciseLogService: ExerciseLogService, private loadingService: LoadingService) { }
+    private exerciseLogService: ExerciseLogService, private loadingService: LoadingService,
+    private horseService: HorseService, private exerciseService: ExerciseService) { }
 
   ionViewWillEnter() {
     this.pageType = this.navDataService.getRouteParamValue('pageType');
@@ -42,20 +50,39 @@ export class ExerciseLogDetailPage {
         this.disabled = false;
         break;
       case 'add':
-        this.disabled = false;
+        this.exerciseLog.horse.name = this.navDataService.getRouteParamValue('horse');
+        this.loadHorseOptions();
         break;
     }
+  }
+
+  loadHorseOptions(): void {
+    this.loadingService.present('Loading data...');
+    const observableArray: Observable<any>[] = [];
+    observableArray.push(this.horseService.loadAllHorses().pipe(first()));
+    observableArray.push(this.exerciseService.loadAllExercises().pipe(first()));
+    forkJoin(observableArray).subscribe((results) => {
+      this.loadingService.dismiss();
+      this.horseList = results[0];
+      this.exerciseList = results[1];
+      this.disabled = false;
+    });
   }
 
   onSubmit() {
     const params: RouteParam[] = [];
     let dbObservable: Observable<any>;
     this.exerciseLog.createdAt = firestore.Timestamp.fromDate(new Date(this.formattedDate));
+    
+    // Get the ID for each object
+    const horseId = this.getObjectId(this.horseList, this.exerciseLog.horse.name);
+    const exerciseId = this.getObjectId(this.exerciseList, this.exerciseLog.exercise.name);
+
     this.loadingService.present('Saving the exercise...');
     if (this.pageType === 'add') {
-      dbObservable = this.exerciseLogService.addExerciseLog(this.exerciseLog);
+      dbObservable = this.exerciseLogService.addExerciseLog(this.exerciseLog, horseId, exerciseId);
     } else {
-      dbObservable = this.exerciseLogService.updateExerciseLog(this.exerciseLog);
+      dbObservable = this.exerciseLogService.updateExerciseLog(this.exerciseLog, horseId, exerciseId);
     }
 
     dbObservable.subscribe(() => {
@@ -73,7 +100,7 @@ export class ExerciseLogDetailPage {
   onEditClick() {
     this.navDataService.updateRouteParam('pageType', 'edit');
     this.pageType = this.navDataService.getRouteParamValue('pageType');
-    this.disabled = false;
+    this.loadHorseOptions();
   }
 
   onBackClick() {
@@ -81,5 +108,9 @@ export class ExerciseLogDetailPage {
     params.push({key: 'exerciseLogHorse', value: this.exerciseLog.horse});
     this.navDataService.routeParams = params;
     this.navCtrl.navigateBack('/exercise-log-list');
+  }
+
+  private getObjectId(objArr: any[], objName: string): string {
+    return objArr.find(x => x.name === objName).id;
   }
 }

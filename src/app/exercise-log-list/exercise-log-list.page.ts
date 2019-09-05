@@ -59,7 +59,7 @@ export class ExerciseLogListPage {
   addExerciseLog() {
     const params: RouteParam[] = [];
     params.push({key: 'pageType', value: 'add'});
-    // TODO: Add the horse object to the params and retrieve on the details page
+    params.push({key: 'horse', value: this.selectedHorse.name});
     this.navDataService.routeParams = params;
     this.navCtrl.navigateForward('/exercise-log-detail');
   }
