@@ -1,3 +1,17 @@
+ion-item {
+    --padding-start: 0;
+}
+
+.format-grid {
+    height: 44px;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.format-grid > ion-row {
+    height: 44px;
+}
+
 .form-buttons {
     ion-button:not(:first-child) {
         margin-left: 1em;
